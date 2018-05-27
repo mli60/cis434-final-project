@@ -4,6 +4,11 @@ library(ggplot2)
 library(scales)
 library(reshape2)
 require(dplyr)
+library(foreign)
+require(plyr)
+require(tm)
+require(RColorBrewer)
+require(wordcloud)
 
 ### Sentiment Classification ###
 
@@ -34,3 +39,15 @@ flights$sentiment <- NA
 for (i in 1:s_len) {
   flights$sentiment[i] <-sentiment_checker(s[i,])
 }
+
+affin<-get_sentiment(tweet, method = "afinn")
+flights$affin <- affin
+bing<-get_sentiment(tweet1, method = "bing")
+nrc<-get_sentiment(tweet1, method = "nrc")
+syuzhet<-get_sentiment(tweet1, method = "syuzhet")
+flights$bing <- bing
+flights$nrc <- nrc
+flights$syuzhet <- syuzhet
+non_complaint<-subset(flights,affin>0 & bing>0 & nrc >0 & syuzhet >0)
+
+
